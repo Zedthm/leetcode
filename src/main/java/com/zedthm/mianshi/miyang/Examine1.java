@@ -11,6 +11,12 @@ import java.io.InputStreamReader;
  * @description:
  */
 public class Examine1 {
+    /*
+    * //有一对兔子，从出生后第3个月起每个月都生一对兔子，
+    //小兔子长到第3个月后每个月又生一对兔子，
+    //假如兔子的寿命是12个月（从出生起第13个月会死），
+    //问第n个月之后有多少个兔子？
+    * */
     public static void main(String[] args) throws IOException {
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         String line;
@@ -40,7 +46,8 @@ public class Examine1 {
                 born += curAges[i];
             }
 
-            // 使用临时数组变量，更新兔子年龄段，年龄大于12死亡
+            // 使用临时数组变量，，不要使用减法更新兔子年龄段，年龄大于12死亡，选择覆盖，
+            // 因为每次出生的兔子都是0个月的，每次把内容往后移动数组，空出下标为0
             int[] nextAges = new int[12];
             for (int i = 0; i < 12; i++) {
                 if (i + 1 < 12) {
@@ -48,13 +55,13 @@ public class Examine1 {
                 }
             }
 
-            // 维护年龄段数组
+            // 维护年龄段数组，下标为0的位置放入新生儿数量，并且更新所有年龄段分组
             nextAges[0] = born;
             curAges = nextAges;
         }
         long total = 0;
         for (int i : curAges) {
-            total+=i;
+            total += i;
         }
         return total;
     }

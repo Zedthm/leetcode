@@ -22,7 +22,28 @@ public class LeetCode567 {
         System.out.println(a + " " + b + " " + c);
     }
 
-    private static boolean checkInclusion3(String s, String ss) {
+    private static boolean checkInclusion3(String s1, String s2) {
+        // 步骤1：预处理长度和数组
+        int n = s1.length(), m = s2.length();
+        if(n > m) return false;               // 边界：s1比s2长直接失败
+        int[] cnt = new int[26];              // 用数组代替哈希表（仅小写字母）
+
+        // 步骤2：初始化s1的"欠债表"
+        for(int i=0; i<n; i++){
+            --cnt[s1.charAt(i)-'a'];          // 负数表示s1欠这些字符
+        }
+
+        // 步骤3：滑动窗口还债
+        int left=0;
+        for(int right=0; right<m; right++){
+            int x = s2.charAt(right)-'a';
+            ++cnt[x];                         // 右指针：将字符加入窗口
+            while(cnt[x] > 0){                // 关键：当前字符超额了！
+                --cnt[s2.charAt(left)-'a'];   // 左指针：吐出最左侧字符
+                left++;                       // 左移直到不超额
+            }
+            if(right-left+1 == n) return true; // 窗口长度正好是n，成功！
+        }
         return false;
     }
 
@@ -73,11 +94,12 @@ public class LeetCode567 {
         if (Arrays.equals(cnt1, cnt2)) {
             return true;
         }
-        for (int i = n; i < m; i++) {
-            --cnt2[ss.charAt(i - n) - 'a'];
-            ++cnt2[ss.charAt(i) - 'a'];
+        // 步骤3：滑动窗口比较后续字符
+        for (int i = n; i < m; ++i) {           // 窗口右移，i为新字符位置
+            ++cnt2[ss.charAt(i) - 'a'];          // 新字符加入窗口右侧
+            --cnt2[ss.charAt(i - n) - 'a'];     // 旧字符移出窗口左侧
             if (Arrays.equals(cnt1, cnt2)) {
-                return true;
+                return true; // 每次滑动后立即检查
             }
         }
         return false;
