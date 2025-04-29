@@ -25,34 +25,65 @@ public class LeetCode15 {
         List<List<Integer>> result = threeSum(arr);
     }
 
+    /**
+     * 标准双指针解法 - 三数之和
+     * 时间复杂度：O(n²)  空间复杂度：O(log n) 排序所需
+     * 核心策略：排序 + 双指针 + 去重剪枝
+     */
     private static List<List<Integer>> threeSum(int[] nums) {
+        List<List<Integer>> result = new ArrayList<>();
+
+        // 边界条件检查
+        if (nums == null || nums.length < 3) {
+            return result;
+        }
+
+        // 步骤1：排序数组（双指针前置条件）
         Arrays.sort(nums);
-        List<List<Integer>> res = new ArrayList<>();
-        for (int i = 0; i < nums.length; i++) {
+        int n = nums.length;
+
+        // 步骤2：遍历第一个元素
+        for (int i = 0; i < n - 2; i++) {
+            // 剪枝1：跳过重复的第一个元素
             if (i > 0 && nums[i] == nums[i - 1]) {
                 continue;
             }
-            int l = i + 1, r = nums.length - 1;
+
+            // 剪枝2：提前终止不可能的情况
+            if (nums[i] + nums[i + 1] + nums[i + 2] > 0) {
+                break;
+            }
+            if (nums[i] + nums[n - 2] + nums[n - 1] < 0) {
+                continue;
+            }
+
+            // 步骤3：初始化双指针
+            int left = i + 1;
+            int right = n - 1;
             int target = -nums[i];
-            while (l < r) {
-                int sum = nums[l] + nums[r];
+
+            // 步骤4：双指针扫描
+            while (left < right) {
+                int sum = nums[left] + nums[right];
+
                 if (sum == target) {
-                    res.add(Arrays.asList(nums[i], nums[l], nums[r]));
-                    ++l;
-                    --r;
-                    while (l < r && nums[l] == nums[l - 1]) {
-                        ++l;
+                    result.add(Arrays.asList(nums[i], nums[left], nums[right]));
+                    // 移动指针并跳过重复元素
+                    while (left < right && nums[left] == nums[left + 1]) {
+                        left++;
                     }
-                    while (l < r && nums[r] == nums[r + 1]) {
-                        --r;
+                    while (left < right && nums[right] == nums[right - 1]) {
+                        right--;
                     }
-                }else if(sum < target){
-                    l++;
-                }else{
-                    --r;
+                    left++;
+                    right--;
+                } else if (sum < target) {
+                    left++;  // 和过小，左指针右移
+                } else {
+                    right--; // 和过大，右指针左移
                 }
             }
         }
-        return res;
+        return result;
     }
 }

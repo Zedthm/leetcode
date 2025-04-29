@@ -25,21 +25,43 @@ public class LeetCode42 {
         System.out.println(result);
     }
 
+    /**
+     * 标准双指针解法 - 接雨水问题
+     * 时间复杂度：O(n)  空间复杂度：O(1)
+     * 核心策略：双指针夹逼法，动态维护左右边界最大值
+     * 算法思想：
+     * 1. 左右指针分别从两端向中间移动
+     * 2. 动态维护左右两侧遇到的最高柱子（leftMax/rightMax）
+     * 3. 当前接水量由较小侧的边界最大值决定
+     */
     private static int trap(int[] height) {
-        int ans = 0;
-        int left =0, right= height.length-1;
-        int lmax = 0, rmax=0;
+        // 边界条件检测：至少需要两根柱子才能储水
+        if (height == null || height.length < 2) {
+            return 0;
+        }
+
+        int water = 0;
+        int left = 0;                    // 左指针初始化
+        int right = height.length - 1;   // 右指针初始化
+        int leftMax = 0;                 // 左侧历史最大高度
+        int rightMax = 0;                // 右侧历史最大高度
+
         while (left < right) {
-            lmax = Math.max(lmax, height[left]);
-            rmax = Math.max(rmax, height[right]);
+            // 更新左右侧最大高度（实时维护）
+            leftMax = Math.max(leftMax, height[left]);
+            rightMax = Math.max(rightMax, height[right]);
+
+            // 核心策略：总是移动高度较小侧的指针
             if (height[left] < height[right]) {
-                ans += lmax - height[left];
-                ++left;
-            }else{
-                ans += rmax - height[right];
-                --right;
+                // 当前左指针处储水量 = 左侧最大高度 - 当前高度
+                water += leftMax - height[left];
+                left++;
+            } else {
+                // 当前右指针处储水量 = 右侧最大高度 - 当前高度
+                water += rightMax - height[right];
+                right--;
             }
         }
-        return ans;
+        return water;
     }
 }
