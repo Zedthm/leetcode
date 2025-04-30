@@ -33,7 +33,9 @@ public class LeetCode438 {
     private static List<Integer> findAnagrams(String s, String p) {
         List<Integer> result = new ArrayList<>();
         int sLen = s.length(), pLen = p.length();
-        if (sLen < pLen) return result;
+        if (sLen < pLen) {
+            return result;
+        }
 
         // 字符频率记录数组
         int[] pCount = new int[26];
